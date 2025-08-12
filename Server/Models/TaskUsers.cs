@@ -1,0 +1,25 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TaskManagerAPI.Models
+{
+    public class TaskUsers
+    {
+        public int Id { get; set; }
+        [Required]
+
+        public string Name { get; set; }
+        [Required]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+
+        public string Email { get; set; }
+        [Required]
+
+        public string Password { get; set; }
+        [Required]
+
+        public string ConfirmedPassword { get; set; }
+
+
+    }
+
+}

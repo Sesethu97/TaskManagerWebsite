@@ -1,0 +1,12 @@
+# Ignore Visual Studio working files
+.vs/
+
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore node dependencies
+node_modules/
+
+# Ignore logs
+*.log
