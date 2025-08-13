@@ -9,6 +9,8 @@ import Topbar from "./components/TopNav/Topbar";
 import Sidebar from "./components/SideNav/Sidebar";
 import NewTask from "./pages/NewTask/NewTaskPage";
 import UserProfilePage from "./pages/ProfilePage/UserProfilePage";
+import Login from "./pages/LoginPage/Login";
+import SignUp from "./pages/RegisterPage/Register";
 
 function Layout() {
   return (
@@ -35,6 +37,9 @@ function App() {
           <Route path="/new-task" element={<NewTask />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
         </Route>
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
       </Routes>
     </Router>
   );

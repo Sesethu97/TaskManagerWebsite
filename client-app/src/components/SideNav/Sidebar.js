@@ -78,9 +78,11 @@ function Sidebar() {
 
       <div className="mt-auto mb-4 space-y-3">
         <div className="flex flex-col items-center space-y-2">
-          <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm">
-            Me
-          </div>
+          <Link to="/login">
+            <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm">
+              Me
+            </div>
+          </Link>
         </div>
       </div>
     </aside>
