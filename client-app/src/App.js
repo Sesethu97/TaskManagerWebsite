@@ -7,6 +7,8 @@ import {
 import Home from "./pages/HomePage/Home";
 import Topbar from "./components/TopNav/Topbar";
 import Sidebar from "./components/SideNav/Sidebar";
+import NewTask from "./pages/NewTask/NewTaskPage";
+import UserProfilePage from "./pages/ProfilePage/UserProfilePage";
 
 function Layout() {
   return (
@@ -30,6 +32,8 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/new-task" element={<NewTask />} />
+          <Route path="/user-profile" element={<UserProfilePage />} />
         </Route>
       </Routes>
     </Router>
