@@ -1,46 +1,60 @@
+import React, { useEffect, useState } from "react";
+
 function Home() {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    fetch("https://localhost:7183/api/Task")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Tasks fetched:", data);
+        setTasks(data);
+      })
+      .catch((err) => console.error("Error fetching tasks:", err));
+  }, []);
+
+  const getTasksByStatus = (status) => {
+    const statusMap = {
+      "To Do": "todo",
+      "In Progress": "inprogress",
+      "On Hold": "onhold",
+      Complete: "complete",
+    };
+
+    return tasks.filter((task) => task.status === statusMap[status]);
+  };
+
+  const columns = [
+    { title: "To Do", status: "To Do" },
+    { title: "In Progress", status: "In Progress" },
+    { title: "On Hold", status: "On Hold" },
+    { title: "Complete", status: "Complete" },
+  ];
+
   return (
     <div className="w-full px-2">
       <div className="p-6 rounded-md bg-slate-300 max-h-svh">
-        <div className="flex items-center gap-4 mb-6">
-          <h2 className="text-2xl font-semibold">Tasks board- landing page</h2>
-          <div class="grid grid-cols-4 gap-4">
-            <div className="flex flex-col">
+        <h2 className="text-2xl font-semibold mb-6">
+          Tasks board - landing page
+        </h2>
+        <div className="grid grid-cols-4 gap-4">
+          {columns.map((col) => (
+            <div key={col.status} className="flex flex-col">
               <div className="bg-white h-[30px] w-full rounded-md shadow flex items-center justify-center font-semibold">
-                To Do
+                {col.title}
               </div>
               <div className="mt-2 flex-1 bg-gray-100 rounded-md p-2">
-                Tasks go here
+                {getTasksByStatus(col.status).map((task) => (
+                  <div
+                    key={task.id}
+                    className="bg-white rounded-md shadow p-2 mb-2"
+                  >
+                    {task.title}
+                  </div>
+                ))}
               </div>
             </div>
-
-            <div className="flex flex-col">
-              <div className="bg-white h-[30px] w-full rounded-md shadow flex items-center justify-center font-semibold">
-                In Progress
-              </div>
-              <div className="mt-2 flex-1 bg-gray-100 rounded-md p-2">
-                Tasks go here
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <div className="bg-white h-[30px] w-full rounded-md shadow flex items-center justify-center font-semibold">
-                On Hold
-              </div>
-              <div className="mt-2 flex-1 bg-gray-100 rounded-md p-2">
-                Tasks go here
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <div className="bg-white h-[30px] w-full rounded-md shadow flex items-center justify-center font-semibold">
-                Complete
-              </div>
-              <div className="mt-2 flex-1 bg-gray-100 rounded-md p-2">
-                Tasks go here
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
