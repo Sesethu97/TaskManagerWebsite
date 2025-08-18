@@ -1,15 +1,20 @@
 import SignIn from "../../components/SignInForm/Login";
+import Taskmanagerwallper from "../../images/taskamanagaerwallpaper.png";
 
 function Login() {
   return (
-    <div className="w-full px-2">
-      <div className="p-6 rounded-md bg-slate-300 max-h-svh">
-        <div className="flex items-center gap-4 mb-6">
-          <h2 className="text-2xl font-semibold">
-            <SignIn />
-          </h2>
-        </div>
-      </div>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+      <section className="flex items-center justify-center px-6 py-12 md:px-16 bg-white">
+        <SignIn />
+      </section>
+
+      <aside className="relative hidden md:block bg-slate-500 rounded-md">
+        <img
+          src={Taskmanagerwallper}
+          alt="wallpaper"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </aside>
     </div>
   );
 }

@@ -44,101 +44,78 @@ function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen overflow-auto">
-      <div className="justify-center grid grid-cols-2 gap-2 w-full max-w-3xl bg-white p-8 shadow-sm shadow-black mb-10 rounded-md">
-        <div className="mb-5">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-2 flex justify-center font-bold">
-              <h2>Create an account</h2>
-            </div>
-            <div className="flex justify-center text-sm mb-4">
-              <h2>
-                Already have an account?
-                <Link to="/login">
-                  <span className="font-bold ml-2">Login</span>
-                </Link>
-              </h2>
-            </div>
-
-            <div className="mb-5">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              />
-            </div>
-
-            <div className="mb-5">
-              <label htmlFor="email" className="block mb-2 text-sm font-medium">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              />
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-medium"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              />
-            </div>
-            <div>
-              <div className="flex items-center mb-4">
-                <input
-                  id="default-checkbox"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  for="default-checkbox"
-                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  I agree to the Terms and Privacy Policy
-                </label>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <button
-                type="submit"
-                className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-1/3 p-2.5"
-              >
-                Sign Up
-              </button>
-            </div>
-          </form>
+    <div className="w-full max-w-md">
+      <form onSubmit={handleSubmit}>
+        <div className="mb-6 text-center font-bold">
+          <h2 className="text-3xl">Welcome</h2>
         </div>
-        <div className="mb-5 flex items-center justify-center">
-          <img
-            src={Taskmanagerwallper}
-            alt="wallpaper"
-            className="max-w-full h-auto"
+
+        <div className="mb-5">
+          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+            Name
+          </label>
+          <input
+            type="text"
+            id="identifier"
+            value={formData.name}
+            onChange={handleChange}
+            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            required
+            autoComplete="username"
           />
         </div>
-      </div>
+        <div className="mb-5">
+          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+            Email
+          </label>
+          <input
+            type="text"
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            required
+            autoComplete="email"
+          />
+        </div>
+
+        <div className="mb-5">
+          <label htmlFor="password" className="mb-2 block text-sm font-medium">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            required
+            autoComplete="current-password"
+          />
+        </div>
+
+        <div className="mb-4 flex items-center justify-between text-sm">
+          <input
+            id="default-checkbox"
+            type="checkbox"
+            value=""
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <label
+            for="default-checkbox"
+            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >
+            I agree to the Terms and Privacy Policy
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="mx-auto block w-1/2 rounded-2xl border border-pin text-white bg-black hover:bg-slate-700 p-2.5 text-sm disabled:opacity-60"
+        >
+          Register
+        </button>
+      </form>
     </div>
   );
 }
