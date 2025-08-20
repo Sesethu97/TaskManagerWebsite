@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using TaskManagerAPI.Data;
@@ -25,7 +26,7 @@ namespace TaskManagerAPI.Controllers
             return Ok(tasks);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> PostTask([FromBody] TaskItems items)
         {
             var newTasks = await _taskServices.CreateTask(items);
@@ -68,8 +69,7 @@ namespace TaskManagerAPI.Controllers
 
         }
 
-
-
+    
 
     }
 }

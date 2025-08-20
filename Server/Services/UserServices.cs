@@ -54,4 +54,19 @@ public class UserServices : IUserServices
     {
         return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
+
+    public async Task<TaskUsers> Login(string identifier, string password)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.Name == identifier || x.Email == identifier);
+
+        if (user == null)
+            return null;
+
+        if (user.Password != password)
+            return null;
+
+        return user;
+    }
+
 }

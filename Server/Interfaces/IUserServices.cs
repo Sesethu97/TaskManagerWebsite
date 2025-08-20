@@ -3,8 +3,10 @@
 namespace TaskManagerAPI.Interfaces
 {
     public interface IUserServices
+
     {
         Task<TaskUsers> CreateUser(TaskUsers user);
+        Task<TaskUsers>Login(string identifier, string password);
         Task<TaskUsers> UpdateUser(TaskUsers user);
         Task<TaskUsers> DeleteUser(TaskUsers user);
         Task<List<TaskUsers>> GetUsers();
