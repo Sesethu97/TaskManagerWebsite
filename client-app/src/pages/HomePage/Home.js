@@ -32,10 +32,10 @@ function Home() {
   ];
 
   return (
-    <div className="w-full px-2">
+    <div className="w-full h-full">
       <div className="p-6 rounded-md bg-slate-300 max-h-svh">
-        <h2 className="text-2xl font-semibold mb-6">
-          Tasks board - landing page
+        <h2 className="text-2xl flex justify-center  text-white font-semibold mb-6">
+          Tasks board
         </h2>
         <div className="grid grid-cols-4 gap-4">
           {columns.map((col) => (

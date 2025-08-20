@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 function SignIn() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ identifier: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -18,32 +18,33 @@ function SignIn() {
     setLoading(true);
 
     const payload = {
-      identifier: formData.identifier,
+      email: formData.email,
       password: formData.password,
     };
 
     try {
-      const res = await fetch("https://localhost:7183/api/User/create", {
+      const res = await fetch("https://localhost:7183/api/Auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
+      const text = await res.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+
       if (!res.ok) {
-        let msg = "Login failed";
-        try {
-          const err = await res.json();
-          msg = err?.message || err?.error || JSON.stringify(err);
-        } catch {
-          msg = await res.text();
-        }
+        const msg = data?.message || data?.error || text || "Login failed";
         throw new Error(msg);
       }
 
-      const data = await res.json();
-      if (data?.token) localStorage.setItem("auth_token", data.token);
-
-      navigate("/");
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/user-profile");
     } catch (err) {
       setErrorMsg(err.message || "Network error");
     } finally {
@@ -63,20 +64,17 @@ function SignIn() {
         )}
 
         <div className="mb-5">
-          <label
-            htmlFor="identifier"
-            className="mb-2 block text-sm font-medium"
-          >
-            Email/Username
+          <label htmlFor="email" className="mb-2 block text-sm font-medium">
+            Email
           </label>
           <input
             type="text"
-            id="identifier"
-            value={formData.identifier}
+            id="email"
+            value={formData.email}
             onChange={handleChange}
             className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
             required
-            autoComplete="username"
+            autoComplete="email"
           />
         </div>
 
@@ -107,7 +105,7 @@ function SignIn() {
         <button
           type="submit"
           disabled={loading}
-          className="mx-auto block w-1/2 rounded-2xl border border-pin text-white bg-black hover:bg-slate-700 p-2.5 text-sm disabled:opacity-60"
+          className="mx-auto block w-1/2 rounded-2xl text-white bg-blue-600 hover:bg-blue-700 p-2.5 text-sm disabled:opacity-60"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>

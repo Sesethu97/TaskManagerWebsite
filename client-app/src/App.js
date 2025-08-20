@@ -19,7 +19,7 @@ function Layout() {
       <div className="flex-1 ml-20">
         <div className="h-16 mb-4 px-2">
           <Topbar />
-          <div className="pb-8">
+          <div className=" pb-8">
             <Outlet />
           </div>
         </div>
