@@ -74,6 +74,7 @@ function Sidebar() {
     return () => window.removeEventListener("mousedown", onDown);
   }, [profileOpen]);
 
+ 
   return (
     <>
       <aside className="fixed top-0 left-0 z-40 w-36 h-screen bg-teal-900 border-r border-teal-200 flex flex-col items-center py-4">

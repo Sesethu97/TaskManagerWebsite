@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import TaskInfo from "../../components/TaskInfoSlide/TaskInfo";
+import CreateTaskForm from "../../components/CreateTask/CreateTaskForm";
 
 function Home() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     fetch("https://localhost:7183/api/Task")
@@ -47,6 +49,10 @@ function Home() {
     setIsTaskModalOpen(true);
   };
 
+  const createForm = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="ml-16 mt-4 w-[calc(100%-4rem)] h-full">
       <div className="p-6  max-h-svh">
@@ -65,12 +71,17 @@ function Home() {
               </div>
 
               {col.status === "To Do" && (
-                <button
-                  className="mt-2 w-full bg-teal-600 text-white rounded-md px-2 py-1 text-sm hover:bg-teal-700"
-                  onClick={() => console.log("Add task clicked")}
-                >
-                  + Add Task
-                </button>
+                <>
+                  <button
+                    className="mt-2 w-full bg-teal-600 text-white rounded-md px-2 py-1 text-sm hover:bg-teal-700"
+                    onClick={createForm}
+                  >
+                    + Add Task
+                  </button>
+                  {isOpen && (
+                    <CreateTaskForm onClose={() => setIsOpen(false)} />
+                  )}
+                </>
               )}
 
               <div className="mt-2 flex-1 bg-gray-100 rounded-md p-2">
