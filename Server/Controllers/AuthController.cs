@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Server.DTO;
 using Server.Interfaces;
+using System.Security.Claims;
 using TaskManagerAPI.Interfaces;
 
 [ApiController]
@@ -16,7 +19,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginRequest)
     {
         var user = await _authServices.AuthenticateAsync(loginRequest.Email, loginRequest.Password);
 
@@ -37,10 +40,19 @@ public class AuthController : ControllerBase
             }
         });
     }
+
+    [Authorize]
+    [HttpGet("user")]
+    public IActionResult LoggedInUsers()
+    {
+        var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var name = User.FindFirstValue(ClaimTypes.Name);
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var role = User.FindFirstValue(ClaimTypes.Role);
+
+        if (id == null) return Unauthorized();
+
+        return Ok(new { id, name, email, role });
+    }
 }
 
-public class LoginRequest
-{
-    public string Email { get; set; } = "";
-    public string Password { get; set; } = "";
-}

@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Server.DTO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskManagerAPI.Data;
 using TaskManagerAPI.Interfaces;
 using TaskManagerAPI.Models;
+using TaskManagerAPI.Services;
 
 namespace TaskManagerAPI.Controllers
 {
@@ -69,7 +73,19 @@ namespace TaskManagerAPI.Controllers
 
         }
 
-    
+        [HttpPut("update/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateTask(int id, [FromBody] TasksDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updatedTask = await _taskServices.UpdateTask(id, dto);
+            if (updatedTask == null) return NotFound();
+
+            return Ok(updatedTask);
+        }
+
 
     }
 }

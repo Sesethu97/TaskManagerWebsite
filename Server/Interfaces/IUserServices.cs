@@ -1,4 +1,5 @@
-﻿using TaskManagerAPI.Models;
+﻿using Server.DTO;
+using TaskManagerAPI.Models;
 
 namespace TaskManagerAPI.Interfaces
 {
@@ -7,7 +8,7 @@ namespace TaskManagerAPI.Interfaces
     {
         Task<TaskUsers> CreateUser(TaskUsers user);
         Task<TaskUsers>Login(string identifier, string password);
-        Task<TaskUsers> UpdateUser(TaskUsers user);
+        Task<TaskUsers> UpdateUser(int id, UsersDTO dto);
         Task<TaskUsers> DeleteUser(TaskUsers user);
         Task<List<TaskUsers>> GetUsers();
 

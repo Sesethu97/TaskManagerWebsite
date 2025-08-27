@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Server.DTO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskManagerAPI.Data;
 using TaskManagerAPI.Interfaces;
@@ -88,21 +91,22 @@ namespace TaskManagerAPI.Controllers
             return Ok(createdUser);
         }
 
-
         [HttpPut("update")]
-        public IActionResult UpdateUser([FromBody] TaskUsers user)
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromBody] UsersDTO userDto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-         
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var updatedUser = await _userServices.UpdateUser(userId, userDto);
 
-            var updatedUser = _userServices.UpdateUser(user);
+            if (updatedUser == null) return NotFound();
+
             return Ok(updatedUser);
         }
-     
+
+
 
     }
 

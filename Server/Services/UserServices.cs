@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TaskManagerAPI.Data;
@@ -21,12 +22,21 @@ public class UserServices : IUserServices
         return user;
     }
 
-    public async Task<TaskUsers> UpdateUser(TaskUsers user)
+    public async Task<TaskUsers> UpdateUser(int id, UsersDTO dto)
     {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null) return null;
+
+        user.Name = dto.Name;
+        if (!string.IsNullOrEmpty(dto.PhoneNumber))
+            user.PhoneNumber = dto.PhoneNumber;
+
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+
         return user;
     }
+
 
     public async Task<TaskUsers> DeleteUser(TaskUsers user)
     {

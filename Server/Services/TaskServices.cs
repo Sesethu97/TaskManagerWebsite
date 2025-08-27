@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.DTO;
 using System.Linq;
 using TaskManagerAPI.Data;
 using TaskManagerAPI.Interfaces;
@@ -52,6 +53,24 @@ namespace TaskManagerAPI.Services
             await _context.SaveChangesAsync();
             return true;
 
+        }
+
+        public async Task<TaskItems> UpdateTask(int id, TasksDTO dto)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null) return null;
+
+            task.Title = dto.Title;
+            task.Description = dto.Description;
+            task.Status = dto.Status;
+            task.Priority = dto.Priority;
+            task.DueDate = dto.DueDate;
+            task.AssignedUserId = dto.AssignedUserId;
+
+            _context.Tasks.Update(task);
+            await _context.SaveChangesAsync();
+
+            return task;
         }
 
         public Task<List<TaskItems>> GetAllTasks()
