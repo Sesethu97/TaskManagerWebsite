@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Outlet,
+  Navigate,
 } from "react-router-dom";
 import Home from "./pages/HomePage/Home";
 import Topbar from "./components/TopNav/Topbar";
@@ -32,14 +33,14 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/new-task" element={<NewTask />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
         </Route>
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<SignUp />} />
       </Routes>
     </Router>
   );

@@ -6,14 +6,29 @@ function UserProfile() {
     email: "",
     phonenumber: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    setFormData({
-      name: user.name || "",
-      email: user.email || "",
-      phonenumber: user.phonenumber || "",
-    });
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    fetch("https://localhost:7183/api/Auth/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch user");
+        return res.json();
+      })
+      .then((data) => {
+        setFormData({
+          name: data.name || "",
+          email: data.email || "",
+          phonenumber: data.phoneNumber || "",
+        });
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   const handleChange = (e) => {
@@ -21,10 +36,41 @@ function UserProfile() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(formData));
-    console.log("Saved data:", formData);
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Not authenticated");
+
+      const res = await fetch("https://localhost:7183/api/User/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          phoneNumber: formData.phonenumber,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Failed to update user");
+      }
+
+      const updatedUser = await res.json();
+      // Update localStorage with new info
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Error updating profile: " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const initial = (
@@ -89,19 +135,6 @@ function UserProfile() {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-slate-300"
               required
             />
-            <svg
-              className="w-5 h-5 text-gray-400 hover:text-gray-700 cursor-pointer absolute right-2 top-1/2 transform -translate-y-1/2 mt-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-              />
-            </svg>
           </div>
 
           <div className="mb-5">
@@ -116,9 +149,7 @@ function UserProfile() {
               id="email"
               value={formData.email}
               readOnly
-              onChange={handleChange}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
-              required
             />
           </div>
 
@@ -137,27 +168,15 @@ function UserProfile() {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-slate-300"
               required
             />
-            <svg
-              className="w-5 h-5 text-gray-400 hover:text-gray-700 cursor-pointer absolute right-2 top-1/2 transform -translate-y-1/2 mt-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-              />
-            </svg>
           </div>
 
           <div className="flex justify-center">
             <button
               type="submit"
+              disabled={loading}
               className="px-5 py-2.5 rounded-lg text-sm font-medium bg-slate-900 text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-slate-300"
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

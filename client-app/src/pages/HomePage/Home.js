@@ -106,25 +106,14 @@ function Home() {
       <TaskInfo
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
-        title={selectedTask?.title}
-      >
-        <p className="text-white">
-          <strong className="text-teal-100">Status:</strong>{" "}
-          {selectedTask?.status}
-        </p>
-        <p className="text-white">
-          <strong className="text-teal-100">Description:</strong>{" "}
-          {selectedTask?.description}
-        </p>
-        <p className="text-white">
-          <strong className="text-teal-100">Due Date:</strong>{" "}
-          {selectedTask?.duedate}
-        </p>
-        <p className="text-white">
-          <strong className="text-teal-100">Priority:</strong>{" "}
-          {selectedTask?.priority}
-        </p>
-      </TaskInfo>
+        task={selectedTask}
+        onUpdate={(updatedTask) => {
+          setTasks((prev) =>
+            prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+          );
+          setSelectedTask(updatedTask);
+        }}
+      />
     </div>
   );
 }

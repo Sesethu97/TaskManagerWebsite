@@ -74,7 +74,14 @@ function Sidebar() {
     return () => window.removeEventListener("mousedown", onDown);
   }, [profileOpen]);
 
- 
+  const payload = {
+    Name: formData.name,
+    Email: formData.email,
+    Password: formData.password,
+  };
+
+  console.log("payload sidebar", payload);
+
   return (
     <>
       <aside className="fixed top-0 left-0 z-40 w-36 h-screen bg-teal-900 border-r border-teal-200 flex flex-col items-center py-4">
@@ -104,7 +111,7 @@ function Sidebar() {
           <ul className="flex flex-col items-center space-y-6 text-white">
             <li>Overview</li>
             <li>Workloads</li>
-            <Link to="/">
+            <Link to="/home">
               <li>All Tasks</li>
             </Link>
 
@@ -155,7 +162,7 @@ function Sidebar() {
               </button>
 
               <Link
-                to="/login"
+                to="/"
                 className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100"
                 role="menuitem"
                 onClick={() => {
@@ -209,7 +216,7 @@ function Sidebar() {
               </Link>
 
               <Link
-                to="/login"
+                to="/"
                 className="w-full rounded-lg bg-red-500 text-white px-4 py-2 text-sm hover:opacity-95"
                 onClick={() => {
                   setProfileOpen(false);

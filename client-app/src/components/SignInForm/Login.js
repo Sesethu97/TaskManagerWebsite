@@ -5,7 +5,6 @@ function SignIn() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -14,7 +13,6 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg("");
     setLoading(true);
 
     const payload = {
@@ -31,7 +29,6 @@ function SignIn() {
 
       const text = await res.text();
       let data;
-
       try {
         data = JSON.parse(text);
       } catch {
@@ -43,10 +40,17 @@ function SignIn() {
         throw new Error(msg);
       }
 
-      localStorage.setItem("user", JSON.stringify(data));
-      navigate("/user-profile");
+      // ✅ Expecting { token, user }
+      if (data.token && data.user) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/home");
+      } else {
+        throw new Error("Invalid login response from server");
+      }
     } catch (err) {
-      setErrorMsg(err.message || "Network error");
+      console.error(err);
+      alert("Login error: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -56,15 +60,14 @@ function SignIn() {
     <div className="w-full max-w-md">
       <form onSubmit={handleSubmit}>
         <div className="mb-6 text-center font-bold">
-          <h2 className="text-3xl">Welcome</h2>
+          <h2 className="text-3xl text-teal-900">Welcome</h2>
         </div>
 
-        {errorMsg && (
-          <div className="mb-4 text-sm text-red-600">{errorMsg}</div>
-        )}
-
         <div className="mb-5">
-          <label htmlFor="email" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="email"
+            className="mb-2 text-teal-900 block text-sm font-medium"
+          >
             Email
           </label>
           <input
@@ -72,14 +75,17 @@ function SignIn() {
             id="email"
             value={formData.email}
             onChange={handleChange}
-            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            className="block w-full rounded-2xl border text-teal-900 border-teal-900 bg-teal-50 p-2.5 text-sm"
             required
             autoComplete="email"
           />
         </div>
 
         <div className="mb-5">
-          <label htmlFor="password" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="password"
+            className="mb-2 block text-sm text-teal-900 font-medium"
+          >
             Password
           </label>
           <input
@@ -87,17 +93,17 @@ function SignIn() {
             id="password"
             value={formData.password}
             onChange={handleChange}
-            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            className="block w-full rounded-2xl border text-teal-900 border-teal-900 bg-teal-50 p-2.5 text-sm"
             required
             autoComplete="current-password"
           />
         </div>
 
         <div className="mb-4 flex items-center justify-between text-sm">
-          <Link to="/forgot-password" className="underline">
+          <Link to="/forgot-password" className="underline text-teal-900">
             I forgot my password
           </Link>
-          <Link to="/register" className="underline">
+          <Link to="/register" className="underline text-teal-900">
             Create account
           </Link>
         </div>
@@ -105,7 +111,7 @@ function SignIn() {
         <button
           type="submit"
           disabled={loading}
-          className="mx-auto block w-1/2 rounded-2xl text-white bg-blue-600 hover:bg-blue-700 p-2.5 text-sm disabled:opacity-60"
+          className="mx-auto block w-1/2 rounded-2xl border border-pin text-white bg-teal-900 hover:bg-slate-700 p-2.5 text-sm disabled:opacity-60"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>

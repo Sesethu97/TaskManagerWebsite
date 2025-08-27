@@ -8,7 +8,7 @@ function Login() {
         <SignIn />
       </section>
 
-      <aside className="relative hidden md:block bg-slate-500 rounded-md">
+      <aside className="relative hidden md:block bg-teal-900 rounded-md">
         <img
           src={Taskmanagerwallper}
           alt="wallpaper"

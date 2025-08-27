@@ -1,8 +1,10 @@
 import { useState } from "react";
-import Taskmanagerwallper from "../../images/taskamanagaerwallpaper.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,6 +17,7 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const payload = {
       Name: formData.name,
@@ -32,6 +35,8 @@ function Register() {
       if (response.ok) {
         const data = await response.json();
         alert("User created successfully!");
+        navigate("/user-profile");
+
         console.log(data);
       } else {
         const err = await response.text();
@@ -40,6 +45,8 @@ function Register() {
     } catch (error) {
       console.error(error);
       alert("Network error: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,25 +54,39 @@ function Register() {
     <div className="w-full max-w-md">
       <form onSubmit={handleSubmit}>
         <div className="mb-6 text-center font-bold">
-          <h2 className="text-3xl">Welcome</h2>
+          <div className="text-teal-900">
+            <h2 className="text-3xl ">Create an account</h2>
+          </div>
+          <div className=" text-teal-950 text-xs">
+            Already have an account?{" "}
+            <Link to="/login">
+              <span className="font-bold">Login</span>
+            </Link>
+          </div>
         </div>
 
         <div className="mb-5">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="name"
+            className="mb-2 block text-teal-900 text-sm font-medium"
+          >
             Name
           </label>
           <input
             type="text"
-            id="identifier"
+            id="name"
             value={formData.name}
             onChange={handleChange}
-            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            className="block w-full rounded-2xl border text-teal-900 border-teal-900 bg-teal-50 p-2.5 text-sm"
             required
             autoComplete="username"
           />
         </div>
         <div className="mb-5">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="name"
+            className="mb-2 text-teal-900 block text-sm font-medium"
+          >
             Email
           </label>
           <input
@@ -73,14 +94,17 @@ function Register() {
             id="email"
             value={formData.email}
             onChange={handleChange}
-            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            className="block w-full rounded-2xl border text-teal-900 border-teal-900 bg-teal-50 p-2.5 text-sm"
             required
             autoComplete="email"
           />
         </div>
 
         <div className="mb-5">
-          <label htmlFor="password" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="password"
+            className="mb-2 block text-teal-900 text-sm font-medium"
+          >
             Password
           </label>
           <input
@@ -88,7 +112,7 @@ function Register() {
             id="password"
             value={formData.password}
             onChange={handleChange}
-            className="block w-full rounded-2xl border border-gray-300 bg-gray-50 p-2.5 text-sm"
+            className="block w-full rounded-2xl border text-teal-900 border-teal-900 bg-teal-50 p-2.5 text-sm"
             required
             autoComplete="current-password"
           />
@@ -99,11 +123,11 @@ function Register() {
             id="default-checkbox"
             type="checkbox"
             value=""
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-teal-900  bg-teal-900 border-teal-900 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
             for="default-checkbox"
-            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            className="ms-2 text-sm font-medium text-teal-900 dark:text-teal-900"
           >
             I agree to the Terms and Privacy Policy
           </label>
@@ -111,9 +135,10 @@ function Register() {
 
         <button
           type="submit"
-          className="mx-auto block w-1/2 rounded-2xl border border-pin text-white bg-black hover:bg-slate-700 p-2.5 text-sm disabled:opacity-60"
+          disabled={loading}
+          className="mx-auto block w-1/2 rounded-2xl border border-pin text-white bg-teal-900 hover:bg-slate-700 p-2.5 text-sm disabled:opacity-60"
         >
-          Register
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
