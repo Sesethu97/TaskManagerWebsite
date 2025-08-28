@@ -12,6 +12,8 @@ namespace TaskManagerAPI.Interfaces
         Task<TaskItems> UpdateTask(int id, TasksDTO dto);
 
         Task<TaskItems> GetTaskById(int id);
+        Task<List<TaskItems>> GetTasksByUser(int userId);
+
         Task<List<TaskItems>> GetTasksByList(string letter);
         Task<List<TaskItems>> GetTasksByDate(DateTime? date);
 

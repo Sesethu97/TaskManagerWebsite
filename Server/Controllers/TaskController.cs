@@ -86,6 +86,16 @@ namespace TaskManagerAPI.Controllers
             return Ok(updatedTask);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetTasksByUser(int userId)
+        {
+            var tasks = await _taskServices.GetTasksByUser(userId);
+            if (tasks == null || !tasks.Any())
+                return NotFound("No tasks found for this user.");
+
+            return Ok(tasks);
+        }
+
 
     }
 }

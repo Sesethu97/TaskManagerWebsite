@@ -106,6 +106,15 @@ namespace TaskManagerAPI.Services
                 .ToListAsync();
         }
 
+
+        public async Task<List<TaskItems>> GetTasksByUser(int userId)
+        {
+            return await _context.Tasks
+                .Where(t => t.AssignedUserId == userId)
+                .OrderByDescending(t => t.DueDate)
+                .ToListAsync();
+        }
+
     }
 
 }
