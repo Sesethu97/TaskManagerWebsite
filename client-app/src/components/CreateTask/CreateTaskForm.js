@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import DatePicker from "react-datepicker";
@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 function CreateTaskForm({ onClose }) {
   const [startDate, setStartDate] = useState(new Date());
   const [description, setDescription] = useState("");
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     status: "",
@@ -15,6 +16,24 @@ function CreateTaskForm({ onClose }) {
     duedate: "",
     assignedUser: "",
   });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("https://localhost:7183/api/User");
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data);
+        } else {
+          console.error("Failed to fetch users");
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -34,26 +53,11 @@ function CreateTaskForm({ onClose }) {
     setFormData((prev) => ({ ...prev, description: value }));
   };
 
-  const users = [
-    { id: 1, name: "Alice", email: "alice@email.com", password: "1234" },
-    { id: 2, name: "Bob", email: "bob@email.com", password: "1234" },
-    { id: 3, name: "Charlie", email: "charlie@email.com", password: "1234" },
-  ];
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.assignedUser) {
       alert("Please select a user to assign the task to.");
-      return;
-    }
-
-    const selectedUser = users.find(
-      (u) => u.id === parseInt(formData.assignedUser)
-    );
-
-    if (!selectedUser) {
-      alert("Invalid user selected.");
       return;
     }
 
@@ -97,9 +101,11 @@ function CreateTaskForm({ onClose }) {
       alert("Network error: " + error.message);
     }
   };
+
   const closeForm = () => {
     if (onClose) onClose();
   };
+
   return (
     <div className="bg-teal-900 text-white">
       <div className="flex flex-col items-center pt-8 h-full overflow-auto">
@@ -200,9 +206,11 @@ function CreateTaskForm({ onClose }) {
                 required
               >
                 <option value="">Select user</option>
-                <option value="1">Alice</option>
-                <option value="2">Bob</option>
-                <option value="3">Charlie</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
