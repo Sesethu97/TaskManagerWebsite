@@ -40,7 +40,6 @@ function SignIn() {
         throw new Error(msg);
       }
 
-      // ✅ Expecting { token, user }
       if (data.token && data.user) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -50,7 +49,6 @@ function SignIn() {
       }
     } catch (err) {
       console.error(err);
-      alert("Login error: " + err.message);
     } finally {
       setLoading(false);
     }
