@@ -12,6 +12,7 @@ import NewTask from "./pages/NewTask/NewTaskPage";
 import UserProfilePage from "./pages/ProfilePage/UserProfilePage";
 import Login from "./pages/LoginPage/Login";
 import SignUp from "./pages/RegisterPage/Register";
+import MyTasks from "./pages/MyTasksPage/MyTasks";
 
 function Layout() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/new-task" element={<NewTask />} />
+          <Route path="/user-tasks" element={<MyTasks />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
         </Route>
       </Routes>

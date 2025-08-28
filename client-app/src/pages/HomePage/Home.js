@@ -42,8 +42,6 @@ function Home() {
     Complete: "bg-green-100 text-green-700",
   };
 
-  const statusOptions = ["To Do", "In Progress", "On Hold", "Complete"];
-
   const handleTaskClick = (task) => {
     setSelectedTask(task);
     setIsTaskModalOpen(true);
@@ -78,12 +76,16 @@ function Home() {
                   >
                     + Add Task
                   </button>
-                  {isOpen && (
-                    <CreateTaskForm onClose={() => setIsOpen(false)} />
-                  )}
                 </>
               )}
-
+              {isOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-teal-900 rounded-lg shadow-lg w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto">
+                    <CreateTaskForm onClose={() => setIsOpen(false)} />
+                  </div>
+                </div>
+              )}
+              {isOpen && <CreateTaskForm onClose={() => setIsOpen(false)} />}
               <div className="mt-2 flex-1 bg-gray-100 rounded-md p-2">
                 {getTasksByStatus(col.status).map((task) => (
                   <div

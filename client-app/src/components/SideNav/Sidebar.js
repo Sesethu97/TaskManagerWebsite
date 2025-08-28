@@ -114,8 +114,9 @@ function Sidebar() {
             <Link to="/home">
               <li>All Tasks</li>
             </Link>
-
-            <li>My Tasks</li>
+            <Link to="/user-tasks">
+              <li>My Tasks</li>
+            </Link>
 
             <li></li>
           </ul>

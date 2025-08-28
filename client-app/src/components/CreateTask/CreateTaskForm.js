@@ -3,10 +3,15 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function CreateTaskForm({ onClose }) {
   const [startDate, setStartDate] = useState(new Date());
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -55,6 +60,7 @@ function CreateTaskForm({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!formData.assignedUser) {
       alert("Please select a user to assign the task to.");
@@ -79,7 +85,11 @@ function CreateTaskForm({ onClose }) {
 
       if (response.ok) {
         const data = await response.json();
-        alert("Task created successfully!");
+        setTimeout(() => {
+          setShowToast(false);
+          if (onClose) onClose();
+          window.location.href = "/home";
+        }, 2000);
         console.log(data);
         setFormData({
           title: "",
@@ -93,12 +103,12 @@ function CreateTaskForm({ onClose }) {
         setDescription("");
       } else {
         const err = await response.text();
-        alert("Error: " + err);
         console.log(err);
       }
     } catch (error) {
       console.error(error);
-      alert("Network error: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,139 +117,143 @@ function CreateTaskForm({ onClose }) {
   };
 
   return (
-    <div className="bg-teal-900 text-white">
-      <div className="flex flex-col items-center pt-8 h-full overflow-auto">
-        <div className="mb-6 flex justify-between w-full px-8 items-center">
-          <h2 className="text-xl font-bold">Task Creation</h2>
-          <button
-            onClick={closeForm}
-            className="text-gray-500 hover:text-gray-700 text-lg font-bold"
-          >
-            x
-          </button>
+    <div className="w-full bg-teal-900 text-white">
+      <div className=" flex justify-between w-full px-8 items-center">
+        <h2 className="text-xl font-bold mx-auto mt-6">Task Creation</h2>
+        <button
+          onClick={closeForm}
+          className="text-teal-300 hover:text-teal-500 text-lg font-bold"
+        >
+          x
+        </button>
+      </div>
+      <form onSubmit={handleSubmit} className=" p-8  mb-10 ">
+        <div className="mb-5">
+          <label htmlFor="title" className="block mb-2 text-sm font-medium">
+            Task Name
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg block w-full p-2.5"
+            required
+          />
         </div>
-        <form onSubmit={handleSubmit} className=" p-8  mb-10 ">
+
+        <div className="grid grid-cols-2 gap-4">
           <div className="mb-5">
-            <label htmlFor="title" className="block mb-2 text-sm font-medium">
-              Task Name
+            <label htmlFor="status" className="block mb-2 text-sm font-medium">
+              Status
             </label>
-            <input
-              type="text"
-              id="title"
-              value={formData.title}
+            <select
+              id="status"
+              value={formData.status}
               onChange={handleChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+              className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg block w-full p-2.5"
               required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="mb-5">
-              <label
-                htmlFor="status"
-                className="block mb-2 text-sm font-medium"
-              >
-                Status
-              </label>
-              <select
-                id="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              >
-                <option value="">Select status</option>
-                <option value="todo">To Do</option>
-                <option value="inprogress">In Progress</option>
-                <option value="onhold">On Hold</option>
-                <option value="complete">Complete</option>
-              </select>
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="priority"
-                className="block mb-2 text-sm font-medium"
-              >
-                Priority
-              </label>
-              <select
-                id="priority"
-                value={formData.priority}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              >
-                <option value="">Select priority</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="mb-5">
-              <label htmlFor="date" className="block mb-2 text-sm font-medium">
-                Due Date
-              </label>
-              <DatePicker
-                selected={startDate}
-                onChange={handleDateChange}
-                dateFormat="yyyy/MM/dd"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-              />
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="assignedUser"
-                className="block mb-2 text-sm font-medium"
-              >
-                Assign To
-              </label>
-              <select
-                id="assignedUser"
-                value={formData.assignedUser}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                required
-              >
-                <option value="">Select user</option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            >
+              <option value="">Select status</option>
+              <option value="todo">To Do</option>
+              <option value="inprogress">In Progress</option>
+              <option value="onhold">On Hold</option>
+              <option value="complete">Complete</option>
+            </select>
           </div>
 
           <div className="mb-5">
             <label
-              htmlFor="description"
+              htmlFor="priority"
               className="block mb-2 text-sm font-medium"
             >
-              Description
+              Priority
             </label>
-            <ReactQuill
-              theme="snow"
-              onChange={handleDescriptionChange}
-              value={description}
-              placeholder="Describe the task in detail..."
+            <select
+              id="priority"
+              value={formData.priority}
+              onChange={handleChange}
+              className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg block w-full p-2.5"
+              required
+            >
+              <option value="">Select priority</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="mb-5">
+            <label htmlFor="date" className="block mb-2 text-sm font-medium">
+              Due Date
+            </label>
+            <DatePicker
+              selected={startDate}
+              onChange={handleDateChange}
+              dateFormat="yyyy/MM/dd"
+              minDate={new Date()}
+              filterDate={(date) => date > new Date()}
+              strictParsing
+              className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg block w-full p-2.5"
             />
           </div>
 
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg w-1/3 p-2.5"
+          <div className="mb-5">
+            <label
+              htmlFor="assignedUser"
+              className="block mb-2 text-sm font-medium"
             >
-              Create Task
-            </button>
+              Assign To
+            </label>
+            <select
+              id="assignedUser"
+              value={formData.assignedUser}
+              onChange={handleChange}
+              className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg block w-full p-2.5"
+              required
+            >
+              <option value="">Select user</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div className="mb-5">
+          <label
+            htmlFor="description"
+            className="block mb-2 text-sm font-medium"
+          >
+            Description
+          </label>
+          <ReactQuill
+            theme="snow"
+            onChange={handleDescriptionChange}
+            value={description}
+            placeholder="Describe the task in detail..."
+            className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg block w-full p-2.5"
+          />
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="bg-teal-50 border border-teal-300 text-teal-900 text-sm rounded-lg w-1/3 p-2.5"
+          >
+            {loading ? "Creating Task" : "Create Task"}
+          </button>
+        </div>
+      </form>
+      {showToast && (
+        <div className="fixed top-5 right-5 bg-teal-600 text-white px-4 py-2 rounded-lg shadow-lg transform transition-transform duration-500 ease-in-out translate-x-0 animate-slide-in">
+          ✅ Task Saved!
+        </div>
+      )}
     </div>
   );
 }
