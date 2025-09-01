@@ -3,19 +3,21 @@ import { useEffect, useState } from "react";
 function MyTasks() {
   const [user, setUser] = useState(null);
   const [tasks, setTasks] = useState([]);
-
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!token) return;
 
-    fetch("https://localhost:7183/api/User/me", {
+    fetch("https://localhost:7183/api/Auth/user", {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
       .then((data) => setUser(data))
       .catch((err) => console.error("Error fetching user:", err));
   }, [token]);
@@ -29,7 +31,10 @@ function MyTasks() {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Error fetching tasks");
+        return res.json();
+      })
       .then((data) => setTasks(data))
       .catch((err) => console.error("Error fetching tasks:", err));
   }, [user, token]);
@@ -40,23 +45,6 @@ function MyTasks() {
         <h2 className="text-2xl flex justify-center text-teal-900 font-bold mb-6">
           My Tasks
         </h2>
-
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <ul className="flex gap-6 text-teal-700 font-medium">
-            <li className="flex items-center gap-5 cursor-pointer hover:font-extrabold">
-              To Do
-            </li>
-            <li className="flex items-center gap-5 cursor-pointer hover:font-extrabold">
-              Complete
-            </li>
-            <li className="flex items-center gap-5 cursor-pointer hover:font-extrabold">
-              Late
-            </li>
-            <li className="flex items-center gap-5 cursor-pointer hover:font-extrabold">
-              All
-            </li>
-          </ul>
-        </div>
 
         <div className="relative overflow-x-auto">
           <table className="w-full text-sm text-left text-teal-50">
@@ -74,10 +62,10 @@ function MyTasks() {
                 tasks.map((task) => (
                   <tr
                     key={task.id}
-                    className="bg-white border-b border-gray-200"
+                    className=" text-teal-900 bg-white border-b border-gray-200"
                   >
                     <td className="px-6 py-4">{task.title}</td>
-                    <td className="px-6 py-4">{user.name}</td>
+                    <td className="px-6 py-4">{user?.name}</td>
                     <td className="px-6 py-4">
                       {task.dueDate
                         ? new Date(task.dueDate).toLocaleDateString()
